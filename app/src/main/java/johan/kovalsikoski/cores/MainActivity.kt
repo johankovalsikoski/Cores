@@ -1,17 +1,15 @@
 package johan.kovalsikoski.cores
 
-import android.graphics.Color
 import android.os.Bundle
 import android.widget.SeekBar
 import androidx.appcompat.app.AppCompatActivity
 import kotlinx.android.synthetic.main.activity_main.*
-import java.util.*
 
 const val MAX_INT = 255
 
-class MainActivity : AppCompatActivity(){
+class MainActivity : AppCompatActivity(), MainContract.View {
 
-    private val random: Random by lazy { Random() }
+    private val presenter by lazy { MainPresenter() }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -19,8 +17,8 @@ class MainActivity : AppCompatActivity(){
 
         sb_red.setOnSeekBarChangeListener(object: SeekBar.OnSeekBarChangeListener {
             override fun onProgressChanged(p0: SeekBar?, progress: Int, p2: Boolean) {
-                v_color_result.setBackgroundColor(Color.rgb(progress, sb_green.progress, sb_blue.progress))
-                updateTextRedLabel(progress)
+                v_color_result.setBackgroundColor(presenter.generateColorFromValues(progress, sb_green.progress, sb_blue.progress))
+                updateLabelRed(progress)
             }
 
             override fun onStartTrackingTouch(p0: SeekBar?) { }
@@ -31,8 +29,8 @@ class MainActivity : AppCompatActivity(){
 
         sb_green.setOnSeekBarChangeListener(object: SeekBar.OnSeekBarChangeListener {
             override fun onProgressChanged(p0: SeekBar?, progress: Int, p2: Boolean) {
-                v_color_result.setBackgroundColor(Color.rgb(sb_red.progress, progress, sb_blue.progress))
-                updateTextGreenLabel(progress)
+                v_color_result.setBackgroundColor(presenter.generateColorFromValues(sb_red.progress, progress, sb_blue.progress))
+                updateLabelGreen(progress)
             }
 
             override fun onStartTrackingTouch(p0: SeekBar?) { }
@@ -43,8 +41,8 @@ class MainActivity : AppCompatActivity(){
 
         sb_blue.setOnSeekBarChangeListener(object: SeekBar.OnSeekBarChangeListener {
             override fun onProgressChanged(p0: SeekBar?, progress: Int, p2: Boolean) {
-                v_color_result.setBackgroundColor(Color.rgb(sb_red.progress, sb_green.progress, progress))
-                updateTextBlueLabel(progress)
+                v_color_result.setBackgroundColor(presenter.generateColorFromValues(sb_red.progress, sb_green.progress, progress))
+                updateLabelBlue(progress)
             }
 
             override fun onStartTrackingTouch(p0: SeekBar?) { }
@@ -54,35 +52,32 @@ class MainActivity : AppCompatActivity(){
         })
 
         btn_random_color.setOnClickListener {
-            val red = generateValueForColor()
-            val green = generateValueForColor()
-            val blue = generateValueForColor()
+            val red = presenter.generateValueForColor()
+            val green = presenter.generateValueForColor()
+            val blue = presenter.generateValueForColor()
 
-            v_color_result.setBackgroundColor(Color.rgb(red, green, blue))
+            v_color_result.setBackgroundColor(presenter.generateColorFromValues(red, green, blue))
 
             sb_red.progress = red
             sb_green.progress = green
             sb_blue.progress = blue
 
-            updateTextRedLabel(red)
-            updateTextGreenLabel(green)
-            updateTextBlueLabel(blue)
+            updateLabelRed(red)
+            updateLabelGreen(green)
+            updateLabelBlue(blue)
         }
     }
 
-    private fun updateTextRedLabel(red: Int) {
+    override fun updateLabelRed(red: Int) {
         tv_red.text = getString(R.string.tv_bar_red, red)
     }
 
-    private fun updateTextGreenLabel(green: Int) {
+    override fun updateLabelGreen(green: Int) {
         tv_green.text = getString(R.string.tv_bar_green, green)
     }
 
-    private fun updateTextBlueLabel(blue: Int) {
+    override fun updateLabelBlue(blue: Int) {
         tv_blue.text = getString(R.string.tv_bar_blue, blue)
     }
-
-    fun generateValueForColor() = random.nextInt(MAX_INT)
-
 
 }

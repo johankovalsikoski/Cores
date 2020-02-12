@@ -6,12 +6,13 @@ import org.junit.jupiter.api.RepeatedTest
 
 class MainActivityTest {
 
-    private val mainActivity: MainActivity by lazy { MainActivity() }
+    private val mainPresenter: MainPresenter by lazy { MainPresenter() }
 
     @Test
     @RepeatedTest(1000)
     fun `generate random color in 0 to 255 range` () {
-        val value = mainActivity.generateValueForColor()
+        val value = mainPresenter.generateValueForColor()
         assertTrue(value in 0..255)
     }
+
 }
