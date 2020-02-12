@@ -4,20 +4,20 @@ import android.os.Bundle
 import android.widget.SeekBar
 import androidx.appcompat.app.AppCompatActivity
 import kotlinx.android.synthetic.main.activity_main.*
+import org.koin.android.ext.android.inject
 
-const val MAX_INT = 255
+class MainActivity : AppCompatActivity() {
 
-class MainActivity : AppCompatActivity(), MainContract.View {
-
-    private val presenter by lazy { MainPresenter() }
+    private val viewModel by inject<MainViewModel>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
+
         sb_red.setOnSeekBarChangeListener(object: SeekBar.OnSeekBarChangeListener {
             override fun onProgressChanged(p0: SeekBar?, progress: Int, p2: Boolean) {
-                v_color_result.setBackgroundColor(presenter.generateColorFromValues(progress, sb_green.progress, sb_blue.progress))
+                v_color_result.setBackgroundColor(viewModel.generateColorFromValues(progress, sb_green.progress, sb_blue.progress))
                 updateLabelRed(progress)
             }
 
@@ -29,7 +29,7 @@ class MainActivity : AppCompatActivity(), MainContract.View {
 
         sb_green.setOnSeekBarChangeListener(object: SeekBar.OnSeekBarChangeListener {
             override fun onProgressChanged(p0: SeekBar?, progress: Int, p2: Boolean) {
-                v_color_result.setBackgroundColor(presenter.generateColorFromValues(sb_red.progress, progress, sb_blue.progress))
+                v_color_result.setBackgroundColor(viewModel.generateColorFromValues(sb_red.progress, progress, sb_blue.progress))
                 updateLabelGreen(progress)
             }
 
@@ -41,7 +41,7 @@ class MainActivity : AppCompatActivity(), MainContract.View {
 
         sb_blue.setOnSeekBarChangeListener(object: SeekBar.OnSeekBarChangeListener {
             override fun onProgressChanged(p0: SeekBar?, progress: Int, p2: Boolean) {
-                v_color_result.setBackgroundColor(presenter.generateColorFromValues(sb_red.progress, sb_green.progress, progress))
+                v_color_result.setBackgroundColor(viewModel.generateColorFromValues(sb_red.progress, sb_green.progress, progress))
                 updateLabelBlue(progress)
             }
 
@@ -52,11 +52,11 @@ class MainActivity : AppCompatActivity(), MainContract.View {
         })
 
         btn_random_color.setOnClickListener {
-            val red = presenter.generateValueForColor()
-            val green = presenter.generateValueForColor()
-            val blue = presenter.generateValueForColor()
+            val red = viewModel.generateValueForColor()
+            val green = viewModel.generateValueForColor()
+            val blue = viewModel.generateValueForColor()
 
-            v_color_result.setBackgroundColor(presenter.generateColorFromValues(red, green, blue))
+            v_color_result.setBackgroundColor(viewModel.generateColorFromValues(red, green, blue))
 
             sb_red.progress = red
             sb_green.progress = green
@@ -68,15 +68,15 @@ class MainActivity : AppCompatActivity(), MainContract.View {
         }
     }
 
-    override fun updateLabelRed(red: Int) {
+    private fun updateLabelRed(red: Int) {
         tv_red.text = getString(R.string.tv_bar_red, red)
     }
 
-    override fun updateLabelGreen(green: Int) {
+    private fun updateLabelGreen(green: Int) {
         tv_green.text = getString(R.string.tv_bar_green, green)
     }
 
-    override fun updateLabelBlue(blue: Int) {
+    private fun updateLabelBlue(blue: Int) {
         tv_blue.text = getString(R.string.tv_bar_blue, blue)
     }
 
