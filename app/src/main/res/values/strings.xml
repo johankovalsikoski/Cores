@@ -1,0 +1,11 @@
+<resources>
+    <string name="app_name">CORES</string>
+    <string name="tv_bar_red">Vermelho: %1$d</string>
+    <string name="tv_bar_green">Green: %1$d</string>
+    <string name="tv_bar_blue">Azul: %1$d</string>
+    <string name="tv_label_red">Vermelho: 0</string>
+    <string name="tv_label_green">Verde: 0</string>
+    <string name="tv_label_blue">Azul: 0</string>
+    <string name="tv_label_selected_color">COR RESULTANTE</string>
+    <string name="btn_random_color">Sortear cor</string>
+</resources>
