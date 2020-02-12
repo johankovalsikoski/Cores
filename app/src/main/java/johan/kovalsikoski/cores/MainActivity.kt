@@ -82,7 +82,7 @@ class MainActivity : AppCompatActivity(){
         tv_blue.text = getString(R.string.tv_bar_blue, blue)
     }
 
-    private fun generateValueForColor() = random.nextInt(MAX_INT)
+    fun generateValueForColor() = random.nextInt(MAX_INT)
 
 
 }
