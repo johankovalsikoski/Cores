@@ -1,9 +1,13 @@
 package johan.kovalsikoski.cores
 
+import android.content.Context
+import android.content.Intent
+import android.content.SharedPreferences
 import android.graphics.Color
 import android.os.Bundle
 import android.widget.SeekBar
 import androidx.appcompat.app.AppCompatActivity
+import com.google.gson.Gson
 import kotlinx.android.synthetic.main.activity_main.*
 import java.util.*
 
@@ -12,6 +16,7 @@ const val MAX_INT = 255
 class MainActivity : AppCompatActivity(){
 
     private val random: Random by lazy { Random() }
+    private val colorList = mutableListOf<ColorObject>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -64,10 +69,33 @@ class MainActivity : AppCompatActivity(){
             sb_green.progress = green
             sb_blue.progress = blue
 
+            addColorToList(red, green, blue)
+
             updateTextRedLabel(red)
             updateTextGreenLabel(green)
             updateTextBlueLabel(blue)
         }
+
+        iv_list.setOnClickListener {
+            startActivity(Intent(this, HistoryActivity::class.java))
+        }
+    }
+
+    private fun addColorToList(red: Int, green: Int, blue: Int) {
+        val colorObject = ColorObject(red, green, blue)
+        colorList.add(colorObject)
+
+        saveToDatabase(convertListIntoJson(colorList))
+    }
+
+    private fun convertListIntoJson(colorList: List<ColorObject>) : String {
+        return Gson().toJson(Database(colorList))
+    }
+
+    private fun saveToDatabase(json: String) {
+        val sharedPreferences = getSharedPreferences("cores", Context.MODE_PRIVATE)
+        val editor = sharedPreferences.edit()
+        editor.putString("database", json).apply()
     }
 
     private fun updateTextRedLabel(red: Int) {
@@ -83,6 +111,5 @@ class MainActivity : AppCompatActivity(){
     }
 
     fun generateValueForColor() = random.nextInt(MAX_INT)
-
 
 }
